@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Please provide your name'],
+    required: [true, 'Please tell us your name!'],
   },
   email: {
     type: String,
@@ -34,7 +34,6 @@ const userSchema = new mongoose.Schema({
       validator: function (el) {
         return el === this.password;
       },
-
       message: 'Passwords are not the same!',
     },
   },
@@ -89,7 +88,6 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     return JWTTimestamp < changedTimestamp;
   }
 
-  // false means not changed
   return false;
 };
 
