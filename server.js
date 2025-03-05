@@ -20,7 +20,6 @@ mongoose
     tlsAllowInvalidCertificates: true,
   })
   .then(() => console.log('DB connection successful'));
-// .catch((err) => console.error('DB connection failed:', err));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

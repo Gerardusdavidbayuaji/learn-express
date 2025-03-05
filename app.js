@@ -1,24 +1,23 @@
+const mongoSanitize = require('express-mongo-sanitize');
+const rateLimit = require('express-rate-limit');
 const express = require('express');
 const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
-const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const helmet = require('helmet');
 const hpp = require('hpp');
 
-const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+const reviewRouter = require('./routes/reviewRoutes');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
-const reviewRouter = require('./routes/reviewRoutes');
-const helmet = require('helmet');
+const AppError = require('./utils/appError');
 
 const app = express();
 app.use(helmet());
 
-// ====================== 1. middleware ======================
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev')); //third party middleware
+  app.use(morgan('dev'));
 }
 
 const limiter = rateLimit({
@@ -29,16 +28,12 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
-// body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
 
-// data sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
-// data sanitization against XSS
 app.use(xss());
 
-// prevent parameter pollution
 app.use(
   hpp({
     whitelist: [
@@ -52,7 +47,6 @@ app.use(
   })
 );
 
-//
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
@@ -66,8 +60,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// ====================== 2. routes, file in folder routes ======================
-
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
@@ -78,5 +70,4 @@ app.all('*', (req, res, next) => {
 
 app.use(globalErrorHandler);
 
-// ====================== 3. start server file in server.js ======================
 module.exports = app;
