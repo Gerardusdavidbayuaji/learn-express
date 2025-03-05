@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const User = require('./userModel');
-// const validator = require('validator');
-const Review = require('./reviewModel');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -13,7 +11,6 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, 'A tour name must have less or equal then 40 characters'],
       minlength: [10, 'A tour name must have more or equal then 10 characters'],
-      // validate: [validator.isAlpha, 'Tour name must only contain characters']
     },
     slug: String,
     duration: {
@@ -117,7 +114,6 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
-// tourSchema.index({ price: 1 });
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
 tourSchema.index({ startLocation: '2dsphere' });
@@ -169,13 +165,6 @@ tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds!`);
   next();
 });
-
-// tourSchema.pre('aggregate', function (next) {
-//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-
-//   console.log(this.pipeline());
-//   next();
-// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 

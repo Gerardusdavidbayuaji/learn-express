@@ -74,13 +74,9 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
 };
 
 reviewSchema.post('save', function () {
-  // this points to current review
   this.constructor.calcAverageRatings(this.tour);
-  // next();
 });
 
-// findByIdAndUpdate
-// findByIdAndDelete
 reviewSchema.pre(/^findOneAnd/, async function (next) {
   this.r = await this.model.findOne(this.getQuery());
   next();
