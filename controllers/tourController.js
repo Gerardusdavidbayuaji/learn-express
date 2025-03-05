@@ -1,7 +1,7 @@
-const Tour = require('./../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
-const factory = require('./handlerFactory');
 const AppError = require('./../utils/appError');
+const Tour = require('./../models/tourModel');
+const factory = require('./handlerFactory');
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -35,9 +35,6 @@ exports.getTourStats = catchAsync(async (req, res) => {
     {
       $sort: { avgPrice: 1 },
     },
-    // {
-    //   $match: { _id: { $ne: 'EASY' } }
-    // }
   ]);
 
   res.status(200).json({
@@ -49,7 +46,7 @@ exports.getTourStats = catchAsync(async (req, res) => {
 });
 
 exports.getMonthlyPlan = catchAsync(async (req, res) => {
-  const year = req.params.year * 1; // 2021
+  const year = req.params.year * 1;
 
   const plan = await Tour.aggregate([
     {
